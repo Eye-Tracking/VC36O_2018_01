@@ -4,7 +4,7 @@
 % \usepackage[nonatbib]{style}
 
 \usepackage[final]{style}
-
+\usepackage{graphicx}
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -14,6 +14,8 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{verbatim}
+\usepackage{cite}
+\usepackage{float}
 
 
 \title{Formatting instructions for VC36O Notes}
@@ -29,11 +31,11 @@
 % author name.
 
 \author{
-  Student1 name, student2 name, etc. \\
+  Elaine C. Sangali, Douglas Abreu \\
   Department of Computer Science\\
   Federal University of Technology - Paran\'{a} / UTFPR\\
   Campo Mour\~{a}o, Paran\'{a}, Brazil \\
-  \texttt{\{STUDENT1, STUDENT2, etc.\}@alunos.utfpr.edu.br} \\
+  \texttt{\{e.nani92, douglasabrel97\}@gmail.com} \\
   %% examples of more authors
   %% \And
   %% Coauthor \\
@@ -61,234 +63,285 @@
 
 \maketitle
 
-\section{Submission of papers VC36O Notes}
+\section{Introdução a Visão Computacional}
+    De acordo com \citeonline{cavalca} e \citeonline{marengoni}, o olho e o cérebro humano conseguem fazer o reconhecimento de objetos e detectar padrões em imagens muito bem, e muitos tentam replicar isso para um modelo computacional.
+    
+    A visão computacional procura replicar a visão humana, tentando reconhecer objetos, organizar informações, montar objetos e detectar padrões em imagens. Tanto na visão computacional quanto no processamento de imagens, a entrada é uma imagem, mas no processamento de imagens a saída pode ser um conjunto de valores numéricos, que podem ou não compor uma outra imagem, já na visão computacional a saída é uma interpretação da imagem como um todo, ou parcialmente.
+    
+    Um dos maiores desafios da visão computacional é detectar padrões em uma imagem, para isso é necessário que a imagem passe por alguns processamentos, como a remoção de ruídos através da filtragem, assim alguns algoritmos podem ser executados para conseguir separar e identificar os objetos da imagem como mostra a figura \ref{fig:fig1}.
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig1.jpg}
+        \caption{Exemplo de detecção de padrões em uma imagem.}
+        \label{fig:fig1}
+    \end{figure}
+    
+    \subsection{Aplicações}
 
-This instructions are based on the lecture notes from \emph{CS131 Computer Vision: Foundations and Applications}\footnote{\url{http://vision.stanford.edu/teaching/cs131_fall1718/}} at Stanford.
+    Uma das aplicações da visão computacional é a medicina, onde é realizado a extração das informações das imagens afim de realizar diagnósticos sobre os pacientes, como exemplo, as imagens de microscopia, de radiografia, de angioplastia, de ultrassonografia, de tomografia e de Ressonância magnética.
+    
+    A visão computacional também é utilizada para outras aplicações, como aplicações militares onde é feito a detecção de unidades inimigas ou mísseis tele-guiados.
+    
+    Uma aplicação que está chamando a atenção ultimamente são os veículos autônomos, onde utilizam visão computacional para a navegação, para detectar obstáculos, manter o carro na pista, obter a localização e produzir mapas do ambiente.
 
-Please read carefully the instructions below and follow them
-faithfully.
+    \subsection{Processos}
+    
+    Segundo a \citeonline{wikipedia} alguns dos processos utilizados na visão computacional são:
+    
+     \begin{quotation}
+     
+    \textbf{Aquisição de imagem:} uma imagem digital é produzida por um ou vários sensores. Dependendo do tipo do sensor, o resultado pode variar entre uma imagem bidimensional, uma cena tridimensional ou ainda uma sequência de imagens. Os valores dos pixels geralmente indicam a intensidade da luz em uma ou várias faixas de cor (o que forma imagens em tom de cinza ou coloridas), mas também podem indicar valores físicos como profundidade e absorção ou reflexão das ondas eletromagnéticas.
+    
+    \textbf{Pré-processamento:} antes de um método de visão computacional ser aplicado em uma imagem para extrair informação, é geralmente necessário processar a imagem para assegurar-se que ela satisfaz as condições do método. Exemplos incluem remapeamento (para assegurar o sistema de coordenadas), redução de ruídos (para assegurar que as informações são verdadeiras) e aumento de contraste (para assegurar que as informações relevantes serão detectadas).
+    
+    \textbf{Extração de características:} características matemáticas da imagem em vários níveis de complexidade são extraídos. Exemplos básicos incluem detecção de bordas, cantos ou pontos. Exemplo sofisticados incluem a morfologia matemática, detecção de texturas, formatos e movimentos.
+    
+    \textbf{Detecção e segmentação:} em algum ponto do processo uma decisão é feita sobre a relevância de regiões da imagem para processamento posterior. Exemplos incluem a seleção de regiões de interesse específicos e segmentação de uma ou mais regiões que contém um objeto de interesse.
+    
+    \textbf{Processamento de alto nível:} neste ponto a entrada é geralmente um conjunto pequeno de dados. O processo posterior inclui a verificação da satisfação dos dados, a estimativa de parâmetros sobre a imagem e a classificação dos objetos detectados em diferentes categorias.
 
-\subsection{Style}
+ \end{quotation}
+    
+\section{Representação de imagens}
+    Para \citeonline{cavalcanti}, as imagens são formadas por primitivas gráficas, tendo elas cores ou não. As primitivas gráficas são os elementos básicos que formam um desenho, como exemplo o ponto, segmento, polilinha, polígono, arco de elipse, etc.
+    
+    As imagens podem ser do tipo vetorial ou matricial, as imagens do tipo vetorial são formadas através de primitivas gráficas, por exemplo, para desenhar uma girafa o desenho não será feito por pixel como o matricial, será utilizado quadrados, linhas, círculos, etc, como mostra a figura \ref{fig:fig2}.
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig2.png}
+        \caption{Exemplo de imagem vetorial.}
+        \label{fig:fig2}
+    \end{figure}
+    
+    Na representação matricial, a imagem é formada por uma matriz onde cada quadrado representa um pixel. Os objetos são formados através do preenchimento desses pixeis afim de formar um desenho. As imagens matriciais também são conhecidas como bitmaps. Na figura \ref{fig:fig3} podemos ver como a imagem é formada.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig3.png}
+        \caption{Exemplo de imagem matricial.}
+        \label{fig:fig3}
+    \end{figure}
+    
+    Através da figura \ref{fig:fig4} podemos ver a diferença entre a representação vetorial e matricial.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig4.png}
+        \caption{Imagem vetorial vs Imagem matricial.}
+        \label{fig:fig4}
+    \end{figure}
+    
+\section{Filtragem de imagens}
+     O \citeonline{demisio}, explica que a filtragem é utilizada para melhorar a qualidade das imagens através da ampliação do seu contraste, eliminação  de  padrões  periódicos  ou aleatórios, melhoria  no  seu  foco  e  acentuação  de características. As técnicas de filtragem são transformações da imagem pixel a pixel, que não dependem apenas do nível de cinza de um determinado pixel, mas também do valor dos níveis de cinza dos pixeis vizinhos. Afim de melhorar a imagem é feito uma multiplicação com a matriz da imagem atual com a máscara do filtro escolhido.
+    
+    Analisando as imagens  podemos  encontrar as frequências altas e baixas. Sendo assim possível  reduzir  os  efeitos  de determinadas  frequências  na imagem,  buscando obter  um  efeito  visual  de  melhor  qualidade  na  imagem.  
+    
+    \subsection{Filtros passa baixas}
+    Os  filtros Passa  Baixas  eliminam os ruídos causados por altas frequências em imagens. As altas frequências podem causar uma  desfocalização caracterizada  por  uma  imagem borrada.
+    
+    Exemplos de filtros passa baixa:
+     
+    \textbf{Filtro da Média:} O pixel central é a média aritmética dos pixeis dentro da área da janela. De acordo com a figura as máscaras utilizadas são:
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig5.png}
+        \caption{Máscara dos filtros da média.}
+        \label{fig:fig5}
+    \end{figure}
+    
+    \textbf{Filtro da Média Ponderada:} O peso depende de sua distância ao peso central. Neste  caso  a  suavização  é  menos  intensa  pois  há  mais  influência  do pixel central.  
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{template/img/fig6.png}
+        \caption{Filtro da média ponderada.}
+        \label{fig:fig6}
+    \end{figure}
+    
+    \textbf{Filtro da Moda:} O nível de cinza do pixel central é o nível de cinza mais populoso dentro da janela de dimensão do filtro. Este  filtro  é  usado  para  homogeneizar  imagens  temáticas,  ou  para  reduzir ruídos mantendo o máximo de informação na imagem. 
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{template/img/fig7.png}
+        \caption{Filtro da moda.}
+        \label{fig:fig7}
+    \end{figure}
+    
+    \textbf{Filtro  da  Mediana:} O  nível  de  cinza  do  pixel  central  é  o  nível  de cinza  intermediário  do  conjunto  ordenado  de  níveis  de  cinza  dentro  da janela. Este  é  um  filtro  complexo  por  envolver  ordenação.  Mas  sua aplicação suaviza a imagem preservando a informação de bordas na imagem. 
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig8.png}
+        \caption{Filtro da mediana.}
+        \label{fig:fig8}
+    \end{figure}
+    
+    \subsection{Filtro passa alta}
+    
+    Os Filtros  Passa  Altas  (FPA)  ou  de  realce  de  bordas, são usados para realçar os detalhes em uma imagem, atenuando  ou  eliminando  as  baixas  frequências,  realçando  assim as altas frequências. O   tamanho   da   máscara   (filtro)   utilizado   influencia   o   resultado  final.  Quanto  menor  forem  as  dimensões  do  filtro,  menos  detalhes  serão  realçados.  No  caso  de  feições  lineares  extensas,  usa-se  máscaras de dimensões grandes. 
+    
+    Filtros Laplacianos : usados para detectar bordas. Estas máscaras caracterizam-se por ter a soma dos pesos = 0.
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig9.png}
+        \caption{Filtro Laplacianos.}
+        \label{fig:fig9}
+    \end{figure}
+    
+    Para entender melhor a diferença entre o filtro passa baixa e alta, considere as figuras \ref{fig:fig19}, \ref{fig:fig20} e \ref{fig:fig21} .
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig19.png}
+        \caption{Imagem original.}
+        \label{fig:fig19}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig20.png}
+        \caption{Aplicado o filtro passa baixa.}
+        \label{fig:fig20}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig21.png}
+        \caption{Aplicado o filtro passa alta.}
+        \label{fig:fig21}
+    \end{figure}
+    
+    
 
-Notes to be submitted to VC36O 2018/1 must be prepared according to the
-instructions presented here.
+\section{Correlação}
+    Correlação são operações básicas para extrair informações de uma imagem.
+    
+    
+\subsection{Exemplo}
+    Vamos considerar uma simples operação de média, na qual substituímos cada pixel em uma imagem 1D pela média de esse pixel e seus dois vizinhos. Suponha que temos uma imagem igual a: uma imagem como entrada e aplicaremos uma operação de média nela assim produzindo uma nova imagem como saída.
+    
+    \begin{table}[h]
+        \centering
+        \caption{Pixels da imagem}
+        \label{tabelacorrelação}
+        \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+        \hline
+         5 & 4 & 3 & 7 & 4 & 6 & 5 & 3 & 6 \\ \hline
+        \end{tabular}
+        \end{table}
+    Quando medimos o quarto pixel, por exemplo, substituímos o valor 3 pela média de 2, 3 e 7. Ou seja, se chamarmos a nova imagem que produzimos J, podemos escrever:
+    J (4) = (I (3) + I (4) + I (5)) / 3 = (2 + 3 + 7) / 3 = 4. Ou, por exemplo, também obtemos:
+    J (3) = (I (2) + I (3) + I (4)) / 3 = (4 + 2 + 3) / 3 = 3. cada pixel da nova imagem depende dos pixels da imagem antiga.
 
-Authors are required to use the NIPS \LaTeX{} style files that is included
-with this file. Tweaking the style files may
-be grounds for rejection.
+\section{Filtragem de imagens no domínio da frequência}
+    Uma imagem originalmente ela está no domínio espacial, para realizar as operações de aplicação dos filtros, é necessário primeiro converter a imagem para o domínio da frequência através da transformada de Fourier, depois que os filtros forem aplicados, é necessário converter novamente a imagem para o domínio espacial através da formula de transformada de Fourier inversa.
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{template/img/fig.png}
+        \caption{Esquema ilustrando os passos da filtragem no domínio da frequência.}
+        \label{fig:fig}
+    \end{figure}
+    
+    A transformada de Fourier pode ser utilizado na forma unidimensional ou bidimensional. Na transformada de Fourier os dados não são perdidos na transformação, eles apenas estão sendo representados de uma outra forma.
+    
+    Para Aconci\footnote{\url{http://www2.ic.uff.br/~aconci/filtragemdominiofrequencia.pdf}}, a princípio parece difícil entender a visualização da imagem, pois, um ponto de uma imagem  representada  no  domínio  Fourier  (ou  da  frequência)  pode  conter  informações  sobre toda  a  imagem  no  domínio  espacial  (figura  10),  indicando  quanto  desta  frequência  há  na  imagem.
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig10.png}
+        \caption{Algumas funções bidimensionais e seus aspectos de Fourier.}
+        \label{fig:fig10}
+    \end{figure}
+    
+    \subsection{Transformada de Fourier Unidimensional}
+    De acordo com \citeonline{adair}, a transformada de Fourier de uma função contínua f(x) de uma variável real x pode ser definida como:
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig11.png}
+        \caption{Função contínua de uma variável real x.}
+        \label{fig:fig11}
+    \end{figure}
+    
+    A partir de F(u), pode-se obter f(x) através da transformada inversa de Fourier:
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\textwidth]{template/img/fig12.png}
+        \caption{Transformada inversa de Fourier.}
+        \label{fig:fig12}
+    \end{figure}
+    
+    As  duas  equações  são  chamadas  de  par  de transformada de Fourier e podem existir se forem integráveis e se f(x) for contínua.
+    
+    A transformada de Fourier de uma função é uma função complexa:
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.3\textwidth]{template/img/fig13.png}
+        \caption{Função transformada de Fourier.}
+        \label{fig:fig13}
+    \end{figure}
+    
+    que pode ser descrita na forma: 
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.3\textwidth]{template/img/fig14.png}
+        \caption{Função transformada de Fourier detalhada.}
+        \label{fig:fig14}
+    \end{figure}
+    
+    onde: 
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{template/img/fig15.png}
+        \caption{Explicação dos termos.}
+        \label{fig:fig15}
+    \end{figure}
+    
+    \subsection{Transformada de Fourier Bidimensional}
+    
+    De acordo com \citeonline{adair}, a transformada de Fourier para uma função bidimensional, pode ser descrita como:
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig16.png}
+        \caption{Função bidimensional Fourier.}
+        \label{fig:fig16}
+    \end{figure}
+    
+    Sendo que a sua função inversa é descrita da seguinte forma:
+    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{template/img/fig17.png}
+        \caption{Função bidimensional Fourier inversa.}
+        \label{fig:fig17}
+    \end{figure}
+    
+    onde:
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{template/img/fig18.png}
+        \caption{Explicação detalhada da função bidimensional.}
+        \label{fig:fig18}
+    \end{figure}
+    
+    \section{Conclusão}
+    Neste documento foi feita uma breve introdução a visão computacional, explicando alguns termos de processamento de imagens que podem ser utilizados nesta matéria. Caso deseje ampliar mais o seu conhecimento sobre o assunto, visite as aulas citadas na referencia deste documento.
 
-The formatting instructions contained in these style files are
-summarized in Sections \ref{gen_inst}, \ref{headings}, and
-\ref{others} below.
-
-\section{General formatting instructions}
-\label{gen_inst}
-
-The text must be confined within a rectangle 5.5~inches (33~picas)
-wide and 9~inches (54~picas) long. The left margin is 1.5~inch
-(9~picas).  Use 10~point type with a vertical spacing (leading) of
-11~points.  Times New Roman is the preferred typeface throughout, and
-will be selected for you by default.  Paragraphs are separated by
-\nicefrac{1}{2}~line space (5.5 points), with no indentation.
-
-The paper title should be 17~point, initial caps/lower case, bold,
-centered between two horizontal rules. The top rule should be 4~points
-thick and the bottom rule should be 1~point thick. Allow
-\nicefrac{1}{4}~inch space above and below the title to rules. All
-pages should start at 1~inch (6~picas) from the top of the page.
-
-For the final version, authors' names are set in boldface, and each
-name is centered above the corresponding address. The lead author's
-name is to be listed first (left-most), and the co-authors' names (if
-different address) are set to follow. If there is only one co-author,
-list both author and co-author side by side.
-
-Please pay special attention to the instructions in Section \ref{others}
-regarding figures, tables, acknowledgments, and references.
-
-\section{Headings: first level}
-\label{headings}
-
-All headings should be lower case (except for first word and proper
-nouns), flush left, and bold.
-
-First-level headings should be in 12-point type.
-
-\subsection{Headings: second level}
-
-Second-level headings should be in 10-point type.
-
-\subsubsection{Headings: third level}
-
-Third-level headings should be in 10-point type.
-
-\paragraph{Paragraphs}
-
-There is also a \verb+\paragraph+ command available, which sets the
-heading in bold, flush left, and inline with the text, with the
-heading followed by 1\,em of space.
-
-\section{Citations, figures, tables, references}
-\label{others}
-
-These instructions apply to everyone.
-
-\subsection{Citations within the text}
-
-Here is how you cite a reference~\cite{krishna2017visual}. See
-``bibliography.bib'' to see how to cite papers. You can use Google
-Scholar to find citations and use their bibtex format.
-
-\subsection{Footnotes}
-
-Footnotes should be used sparingly.  If you do require a footnote,
-indicate footnotes with a number\footnote{Sample footnote.} in the
-text. Place the footnotes at the bottom of the
-page on which they appear.  Precede the footnote with a horizontal
-rule of 2~inches (12~picas).
-
-Note that footnotes are properly typeset \emph{after} punctuation
-marks.\footnote{As in this example.}
-
-\subsection{Figures}
-
-All artwork must be neat, clean, and legible. Lines should be dark
-enough for purposes of reproduction. The figure number and caption
-always appear after the figure. Place one line space before the figure
-caption and one line space after the figure. The figure caption should
-be lower case (except for first word and proper nouns); figures are
-numbered consecutively.
-
-You may use color figures.  However, it is best for the figure
-captions and the paper body to be legible if the paper is printed in
-either black/white or in color.
-\begin{figure}[h]
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
-
-\subsection{Tables}
-
-All tables must be centered, neat, clean and legible.  The table
-number and title always appear before the table.  See
-Table~\ref{sample-table}.
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-Note that publication-quality tables \emph{do not contain vertical
-  rules.} We strongly suggest the use of the \verb+booktabs+ package,
-which allows for typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-\begin{table}[t]
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule{1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\section{Final instructions}
-
-Do not change any aspects of the formatting parameters in the style
-files.  In particular, do not modify the width or length of the
-rectangle the text should fit into, and do not change font sizes
-(except perhaps in the \textbf{References} section; see below). Please
-note that pages should be numbered.
-
-\section{Preparing PDF files}
-
-Please prepare submission files with paper size ``US Letter,'' and
-not, for example, ``A4.''
-
-Fonts were the main cause of problems in the past years. Your PDF file
-must only contain Type 1 or Embedded TrueType fonts. Here are a few
-instructions to achieve this.
-
-\begin{itemize}
-
-\item You should directly generate PDF files using \verb+pdflatex+.
-
-\item You can check which fonts a PDF files uses.  In Acrobat Reader,
-  select the menu Files$>$Document Properties$>$Fonts and select Show
-  All Fonts. You can also use the program \verb+pdffonts+ which comes
-  with \verb+xpdf+ and is available out-of-the-box on most Linux
-  machines.
-
-\item \verb+xfig+ "patterned" shapes are implemented with bitmap
-  fonts.  Use "solid" shapes instead.
-
-\item The \verb+\bbold+ package almost always uses bitmap fonts.  You
-  should use the equivalent AMS Fonts:
-\begin{verbatim}
-   \usepackage{amsfonts}
-\end{verbatim}
-followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or
-\verb+\mathbb{C}+ for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You
-can also use the following workaround for reals, natural and complex:
-\begin{verbatim}
-   \newcommand{\RR}{I\!\!R} %real numbers
-   \newcommand{\Nat}{I\!\!N} %natural numbers
-   \newcommand{\CC}{I\!\!\!\!C} %complex numbers
-\end{verbatim}
-Note that \verb+amsfonts+ is automatically loaded by the
-\verb+amssymb+ package.
-
-\end{itemize}
-
-If your file contains type 3 fonts or non embedded TrueType fonts, we
-will ask you to fix it.
-
-\subsection{Margins in \LaTeX{}}
-
-Most of the margin problems come from figures positioned by hand using
-\verb+\special+ or other commands. We suggest using the command
-\verb+\includegraphics+ from the \verb+graphicx+ package. Always
-specify the figure width as a multiple of the line width as in the
-example below:
-\begin{verbatim}
-   \usepackage[pdftex]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.pdf}
-\end{verbatim}
-See Section 4.4 in the graphics bundle documentation
-(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
-
-A number of width problems arise when \LaTeX{} cannot properly
-hyphenate a line. Please give LaTeX hyphenation hints using the
-\verb+\-+ command when necessary.
-
-\subsubsection*{Acknowledgments}
-
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments go at the end of the paper. Do not include
-acknowledgments in the anonymized submission, only in the final paper.
-
-\section*{References}
-
-References follow the acknowledgments. Use unnumbered first-level
-heading for the references. Any choice of citation style is acceptable
-as long as you are consistent. It is permissible to reduce the font
-size to \verb+small+ (9 point) when listing the references. Here is an example...
 \medskip
 
 % References
 \small
-\bibliographystyle{plain}
+\bibliographystyle{abntex2-alf}
 \bibliography{bibliography}
 \end{document}
