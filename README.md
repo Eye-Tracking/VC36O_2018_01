@@ -1,4 +1,4 @@
- VC36O 2018/1 Visão Computacional / Computer Vision
+# VC36O 2018/1 Visão Computacional / Computer Vision
 
 ## Instructions for creating class notes
 
