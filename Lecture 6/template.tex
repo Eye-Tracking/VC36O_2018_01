@@ -213,20 +213,136 @@ Para tornar a triangulação completamente regular (uniforme e quadriculado), Gu
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.7\textwidth]{imagemDeGeometria.jpg}
-    \caption{Imagens de geometria (Gu, Gortler e Hoppe 2002) ACM: (a) 257x257 imagem de geometria define uma malha sobre a superfície; (b) mapa normal de 512 × 512 que define o vértice normal; (c) modelo 3D final iluminado.}
+    \caption{Imagens de geometria (Gu, Gortler e Hoppe 2002) ACM: (a) 257x257 imagem de geometria define uma malha sobre a superfície; (b) mapa normal de 512x512 que define o vértice normal; (c) modelo 3D final iluminado.}
     \label{fig:imagemGeometria}
 \end{figure}
 
 A Figura \ref{fig:imagemGeometria}a mostra os valores resultantes \textit{(x, y, z)} da malha de superfície mapeada sobre o quadrado unitário, enquanto a Figura \ref{fig:imagemGeometria}b mostra o mapa normal associado \textit{(nx, ny, nz)}, ou seja, as normais de superfície associadas a cada malha vértice, que pode ser usado para compensar a perda de fidelidade visual se a imagem da geometria original estiver muito comprimida.
 
 \section{Reconstrução baseada em modelos}
+Quando sabemos algo antecipadamente sobre os objetos que estamos tentando modelar, podemos construir modelos 3D mais detalhados e confiáveis usando técnicas e representações especializadas. Por exemplo, a arquitetura é geralmente composta de grandes regiões planares e outras formas paramétricas (como superfícies de revolução), geralmente perpendiculares à gravidade e entre si (Seção \ref{subsec:Arquitetural}). Cabeças e faces podem ser representados usando modelos de formato não-rígido, de baixa dimensionalidade, uma vez que a variabilidade na forma e na aparência de faces humanas, embora extremamente grande, ainda é limitada (Seção 12.6.2). Os corpos humanos ou partes, como as mãos, formam estruturas altamente articuladas, que podem ser representadas usando cadeias cinemáticas de elementos esqueletais rígidos por partes ligados por articulações (Seção 12.6.4).
 
-bla bla bla
+Nesta seção, destacamos algumas das principais ideias, representações e algoritmos de modelagem usados para esses três casos. Detalhes e referências adicionais podem ser encontrados em conferências especializadas e workshops dedicados a esses tópicos, por exemplo, o Simpósio Internacional de Processamento 3D de Dados, Visualização e Transmissão (3DPVT), a Conferência Internacional sobre Modelação e Imagens Digitais 3D (3DIM), a Conferência Internacional sobre Rosto Automático e Reconhecimento de Gestos (FG), o Workshop IEEE sobre Análise e Modelagem de Rostos e Gestos, e o Workshop Internacional sobre Rastreamento de Seres Humanos para a Avaliação de seus Movimentos em Seqüências de Imagens (THEMIS).
+
+\subsection{Arquitetural}
+\label{subsec:Arquitetural}
+O trabalho de Debevec, Taylor e Malik (1996)\cite{Debevec:1996:MRA:237170.237191} foi um dos primeiros sistemas de modelagem e renderização híbridos baseados em geometria e imagem. Seu sistema chamado Façade combina uma ferramenta de modelagem geométrica interativa guiada por imagem com correspondência estereofônica baseada em modelo e mapeamento de textura dependente da visão. Durante a fase de modelagem fotogramétrica interativa, o usuário seleciona elementos de bloco e alinha suas bordas com bordas visíveis nas imagens de entrada (Figura \ref{fig:img1}a). O sistema calcula automaticamente as dimensões e localizações dos blocos junto com as posições da câmera usando otimização restrita.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img1.png}
+    \caption{Modelagem arquitetural interativa usando o sistema Façade (Debevec, Taylor e Malik 1996) c 1996 ACM: (a) imagem de entrada com bordas desenhadas pelo usuário mostradas em verde; (b) modelo sólido 3D sombreado; (c) primitivas geométricas sobrepostas à imagem de entrada; (d) modelo 3D final, dependente de visão e mapeado por textura.}
+    \label{fig:img1}
+\end{figure}
+
+(Figura \ref{fig:img1}b-c). Essa abordagem é intrinsecamente mais confiável do que a estrutura geral baseada em recursos do movimento, porque explora a geometria forte disponível nas primitivas de bloco. Trabalhos relacionados de Becker e Bove (1995)\cite{Becker}, Horry, Anjyo e Arai (1997)\cite{Horry:1997:TPU:258734.258854} e Criminisi, Reid e Zisserman (2000)\cite{Criminisi00a} exploram informações similares disponíveis a partir de pontos de fuga. No sistema interativo de modelagem baseada em imagens de Sinha, Steedly, Szeliski et al. (2008)\cite{Sinha:2008:IAM:1409060.1409112}, as direções dos pontos de fuga são usadas para guiar o usuário no desenho de polígonos, que são então automaticamente encaixados em pontos 3D esparsos recuperados usando a estrutura do movimento.
+
+Uma vez que a geometria aproximada foi estimada, mapas de deslocamento mais detalhados podem ser calculados para cada face plana usando uma varredura de plano local, que Debevec, Taylor e Malik (1996)\cite{Debevec:1996:MRA:237170.237191} chamam de estéreo baseado em modelo. Finalmente, durante a renderização, as imagens de diferentes pontos de vista são distorcidas e misturadas à medida que a câmera se move pela cena, usando um processo chamado mapeamento de textura dependente da visão (Figura \ref{fig:img1}d).
+
+Para modelagem de interiores, em vez de trabalhar com imagens individuais, é mais útil trabalhar com panoramas, já que você pode ver extensões maiores de paredes e outras estruturas. O sistema de modelagem 3D desenvolvido por Shum, Han e Szeliski (1998)\cite{Shum1998InteractiveCO} primeiro constrói panoramas calibrados a partir de múltiplas imagens e então faz o usuário desenhar linhas verticais e horizontais na imagem para demarcar os limites das regiões planas. As linhas são inicialmente usadas para estabelecer uma rotação absoluta para cada panorama e são usadas posteriormente (juntamente com os vértices e planos inferidos) para otimizar a estrutura 3D, que pode ser recuperada até a escala de uma ou mais imagens (Figura \ref{fig:img2}). Os panoramas de alta faixa dinâmica de 360º também podem ser usados para modelagem externa, pois fornecem estimativas altamente confiáveis de orientações relativas de câmera, bem como direções de pontos de fuga (Antone e Teller, 2002)\cite{Antone:2002:SEC:598434.598520}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img2.png}
+    \caption{Modelagem 3D interativa a partir de panoramas (Shum, Han e Szeliski, 1998)\cite{Shum1998InteractiveCO}: (a) visão grande angular de um panorama com linhas verticais e horizontais (alinhadas ao eixo) desenhadas pelo usuário; (b) reconstrução de vista única dos corredores.}
+    \label{fig:img2}
+\end{figure}
+
+Enquanto os sistemas de modelagem baseados em imagem anteriores exigiam alguma autoria do usuário, Werner e Zisserman (2002)\cite{Werner} apresentam um sistema de reconstrução baseado em linhas totalmente automatizadas. Eles primeiro detectam linhas e pontos de fuga e os usam para calibrar a câmera; em seguida, eles estabelecem correspondências de linha usando os dois tensores de correspondência de aparência e trifocais, o que permite reconstruir famílias de segmentos de linha 3D, como mostrado na Figura \ref{fig:img3}a. Eles então geram hipóteses planas, usando linhas 3D coplanares e uma varredura de plano com base nos escores de correlação cruzada avaliados em pontos de interesse. Interseções de planos são usadas para determinar a extensão de cada plano, ou seja, uma geometria grosseira inicial, que é então refinada com a adição de recortes e extrusões retangulares ou em forma de cunha (Figura \ref{fig:img3}c).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img3.png}
+    \caption{Reconstrução arquitetônica automatizada usando linhas e planos 3D (Werner e Zisserman 2002)\cite{Werner}: (a) linhas 3D reconstruídas, codificadas por cores por suas direções de fuga; (b) modelo de armação de arame sobreposto a uma imagem de entrada; (c) modelo triangular triangular com janelas; (d) modo final de mapeamento de textura
+}
+    \label{fig:img3}
+\end{figure}
+
+\subsection{Cabeças e rostos}
+Outra área em que modelos especializados de forma e aparência são extremamente úteis é na modelagem de cabeças e faces. Embora a aparência das pessoas pareça infinitamente variável à primeira vista, a forma real da cabeça e da face de uma pessoa pode ser descrita razoavelmente bem usando algumas dezenas de parâmetros.
+
+A Figura \ref{fig:img4} mostra um exemplo de um sistema de modelagem baseado em imagem, em que os pontos-chave especificados pelo usuário em várias imagens são usados para ajustar um modelo de cabeçalho genérico ao rosto de uma pessoa. Como você pode ver na Figura \ref{fig:img4}c, depois de especificar apenas mais de 100 pontos chave, a forma da face se tornou bastante adaptada e reconhecível. Extrair um mapa de textura das imagens originais e, em seguida, aplicá-lo ao modelo de cabeçote resulta em um modelo animado com notável fidelidade visual (Figura \ref{fig:img5}a).
+
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img4.png}
+    \caption{Adaptação do modelo 3D a uma coleção de imagens: (Pighin, Hecker, Lischinski et al. 1998): (a) conjunto de cinco imagens de entrada junto com pontos chave selecionados pelo usuário; (b) o conjunto completo de pontos chave e curvas; (c) três malhas - o original, adaptado após 13 pontos chave, e após 99 pontos chave adicionais; (d) a partição da imagem em regiões animadas separadamente.
+}
+    \label{fig:img4}
+\end{figure}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img5.png}
+    \caption{Rastreamento e reanimação de cabeças e expressões usando modelos 3D deformáveis. (a) Os modelos se ajustam diretamente a cinco fluxos de vídeo de entrada (Pighin, Szeliski e Salesin 2002): A linha inferior mostra os resultados da nova animação de um modelo 3D sintético mapeado por textura com parâmetros de pose e expressão ajustados às imagens de entrada fileira superior. (b) Modelos ajustados a modelos de superfícies estéreo de frame-rate estéreo (Zhang, Snavely, Curless et al. 2004): A linha superior mostra as imagens de entrada com marcadores verdes sintéticos sobrepostos, enquanto a linha inferior mostra a superfície 3D ajustada modelo.
+}
+    \label{fig:img5}
+\end{figure}
+
+Um sistema mais poderoso pode ser construído aplicando-se a análise de componentes principais (PCA) a uma coleção de faces digitalizadas em 3D. Como você pode ver na Figura \ref{fig:img6}, é possível, então, ajustar modelos 3D mais simples a imagens individuais e usar tais modelos para uma variedade de efeitos visuais e de animação (Blanz e Vetter, 1999)\cite{Blanz:1999:MMS:311535.311556}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img6.png}
+    \caption{Modelo 3D de faces morfáveis (Blanz e Vetter 1999)\cite{Blanz:1999:MMS:311535.311556}: (a) modelo 3D original com adição de variações de forma e textura em direções específicas: desvio da média (caricatura), gênero, expressão, peso e formato do nariz ; (b) um modelo 3D morfável é ajustado a uma única imagem, após a qual seu peso ou expressão pode ser manipulado; (c) outro exemplo de uma reconstrução 3D, juntamente com um conjunto diferente de manipulações 3D, como iluminação e mudança de pose.
+}
+    \label{fig:img6}
+\end{figure}
+
+\subsection{Aplicação: Animação Facial}
+Talvez a aplicação mais amplamente utilizada na modelagem de cabeças 3D seja a animação facial. Uma vez que um modelo 3D parametrizado de forma e aparência (textura da superfície) tenha sido construído, ele pode ser usado diretamente para rastrear os movimentos faciais de uma pessoa (Figura \ref{fig:img5}a) e para animar um personagem diferente com esses mesmos movimentos e expressões.
+
+\subsection{Modelagem e rastreamento de corpo inteiro}
+Os tópicos de rastreamento de seres humanos, modelagem de sua forma e aparência e reconhecimento de suas atividades, são algumas das áreas mais ativamente estudadas da visão computacional. Neste Seção levantaremos alguns tópicos importantes na detecção e rastreamento de seres humanos.
+
+\subsubsection{Subtração de fundo}
+Um dos primeiros passos em muitos é modelar o fundo para extrair os objetos em movimento correspondentes às pessoas. Toyama, Krumm, Brumitt et al. (1999) revisam várias técnicas de manutenção de fundo de fosqueamento de diferenças e fornecem uma boa introdução a este tópico. Sidenbladh e Black (2003) desenvolvem um tratamento mais abrangente, que modela não apenas as estatísticas da imagem de fundo, mas também a aparência dos objetos em primeiro plano, estatísticas (diferença de quadros). Uma vez que as silhuetas tenham sido extraídas de uma ou mais câmeras, elas podem ser modeladas usando modelos deformáveis ou outros modelos de contorno (Baumberg e Hogg 1996; Wren, Azarbayejani, Darrell et al. 1997).
+
+\subsubsection{Inicialização e detecção}
+Para rastrear pessoas de maneira totalmente automatizada, é necessário primeiro detectar sua presença em quadros de vídeo individuais. Este tópico está intimamente relacionado à detecção de pedestres, que é frequentemente considerada como um tipo de reconhecimento de objetos (Mori, Ren, Efros et al. 2004; Felzenszwalb e Huttenlocher 2005; Felzenszwalb, McAllester e Ramanan 2008). Técnicas adicionais para inicializar rastreadores 3D baseados em imagens 2D incluem aquelas descritas por Howe, Leventon e Freeman (2000), Rosales e Sclaroff (2000), Shakhnarovich, Viola e Darrell (2003), Sminchisescu, Kanaujia, Li et al. (2005), Agarwal e Triggs (2006), Lee e Cohen (2006), Sigal e Black (2006), e Stenger, Thayananthan, Torr et al. (2006). Técnicas de rastreamento quadro a quadro pode ser utilizadas para fornecer melhor confiabilidade na detecção (Fossati, Dimitrijevic, Lepetit et al. 2007; Andriluka, Roth e Schiele 2008; Ferrari, Marin-Jimenez e Zisserman 2008).
+
+\subsubsection{Acompanhamento com fluxo}
+O rastreamento de pessoas e sua postura de um quadro para outro podem ser aprimorados pela computação do fluxo óptico ou pela correspondência da aparência de seus membros de um quadro para outro. Por exemplo, o modelo de pessoas de papelão de Ju, Black e Yacoob (1996) modela a aparência de cada porção de perna (superior e inferior) como um retângulo móvel e usa fluxo óptico para estimar sua localização em cada quadro subseqüente. Cham e Rehg (1999) e Sidenbladh, Black e Fleet (2000) rastreiam membros usando fluxo óptico e templates, juntamente com técnicas para lidar com múltiplas hipóteses e incertezas. Bregler, Malik e Pullen (2004) usam um modelo 3D completo do movimento dos membros e do corpo, como descrito abaixo.
+
+\subsubsection{Modelos cinemáticos 3D}
+A eficácia da modelagem e do rastreamento humano pode ser bastante aprimorada usando um modelo 3D mais preciso da forma e do movimento de uma pessoa. Subjacente a tais representações, que são onipresentes na animação 3D em jogos e efeitos especiais, está um modelo cinemático ou cadeia cinemática, que especifica o comprimento de cada membro em um esqueleto, bem como os ângulos de rotação 2D ou 3D entre os membros ou segmentos ( Figura \ref{fig:img7}a-b).
+A Figura \ref{fig:img7}a mostra o modelo cinemático de uma mão humana usada por Rehg, Morris e Kanade (2003) para rastrear o movimento da mão em um vídeo. Como você pode ver, os pontos de ligação entre os dedos e os polegares têm dois graus de liberdade, enquanto as articulações dos dedos têm apenas um. O uso desse tipo de modelo pode aumentar consideravelmente a capacidade de um rastreador baseado em borda para lidar com movimento rápido, ambigüidades em pose 3D e oclusões parciais. Os modelos de cadeia cinemática são ainda mais amplamente utilizados para modelagem e rastreamento de todo o corpo (O'Rourke e Badler, 1980; Hogg, 1983; Rohr, 1994). Observe que algumas técnicas usam modelos 2D acoplados a medições 2D, alguns usam medições 3D (dados de intervalo ou vídeo com várias visualizações) com modelos 3D e alguns usam vídeo monocular para inferir e rastrear modelos 3D diretamente. Também é possível usar modelos temporais para melhorar o rastreamento de movimentos periódicos, como caminhar, analisando os ângulos articulares como funções do tempo (Polana e Nelson, 1997; Seitz e Dyer, 1997; Cutler e Davis, 2000). A generalidade e a aplicabilidade de tais técnicas podem ser melhoradas aprendendo padrões típicos de movimento usando a análise de componentes principais (Sidenbladh, Black e Fleet 2000; Urtasun, Fleet e Fua 2006).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img8.png}
+    \caption{Rastreamento do movimento humano em 3D: (a) modelo de cadeia cinemática para uma mão humana (Rehg, Morris e Kanade 2003), reimpresso com permissão da SAGE; (b) seguir um modelo de blob de cadeia cinemática numa sequência de vídeo (Bregler, Malik e Pullen 2004); (c-d) coleção probabilística de membros soltos de partes do corpo (Sigal, Bhatia, Roth et al. 2004)
+}
+    \label{fig:img7}
+\end{figure}
+
+\subsubsection{Modelos probabilísticos}
+Como o rastreamento pode ser uma tarefa tão difícil, técnicas sofisticadas de inferência probabilística são frequentemente usadas para estimar os prováveis estados das pessoas que estão sendo rastreadas. Uma abordagem popular, chamada filtragem de partículas (Isard e Blake, 1998), foi originalmente desenvolvida para rastrear os contornos de pessoas e mãos. Subsequentemente, ele foi aplicado ao rastreamento de todo o corpo (Deutscher, Blake e Reid, 2000; Sidenbladh, Black e Fleet, 2000; Deutscher e Reid, 2005) e continua a ser usado em rastreadores modernos (Ong, Micilotta, Bowden et al. 2006). Abordagens alternativas para lidar com a incerteza inerente ao rastreamento incluem o rastreamento de múltiplas hipóteses (Cham e Rehg, 1999) e covariâncias infladas (Sminchisescu e Triggs, 2001). A Figura \ref{fig:img7}c-d mostra um exemplo de um sofisticado modelo gráfico probabilístico espaço-temporal, que modela não apenas a relação geométrica entre vários membros, mas também sua provável dinâmica temporal (Sigal, Bhatia, Roth et al. 2004 ).
+
+\subsubsection{Modelagem de forma adaptativa}
+Outro componente essencial da modelagem e rastreamento de todo o corpo é a adaptação de modelos de forma parametrizados a dados visuais. Os conjuntos de dados registados são utilizados para modelar a variação na forma como uma função das características pessoais e da pose do esqueleto, por exemplo, o abaulamento dos músculos, como certas articulações são flexionadas (Figura \ref{fig:img8}). O sistema resultante pode então ser utilizado para a conclusão da forma, isto é, a recuperação de um modelo de malha 3D completo a partir de um pequeno número de marcadores capturados, encontrando os melhores parâmetros de modelo tanto no formato como no espaço de posicionamento que se ajustam aos dados medidos. Enquanto os sistemas de estimativa de encaixe e pose de corpo anteriores usam múltiplas vistas para estimar a forma do corpo, um trabalho ainda mais recente de Guan, Weiss, Bǎlan et al. (2009) pode encaixar uma forma humana e representar o modelo para uma única imagem de uma pessoa em um fundo natural. A inicialização manual é usada para estimar um modelo de pose áspera (esqueleto) e altura, e isso é usado para segmentar o contorno da pessoa usando o algoritmo de segmentação Grab Cut. A estimativa da forma e da pose é então refinada usando uma combinação de dicas de borda de silhueta e informações de sombreamento (Figura \ref{fig:img8}). O modelo 3D resultante pode ser usado para criar novas animações.
+
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img7.png}
+    \caption{Estimando a forma humana e pose de uma única imagem usando um modelo 3D paramétrico (Guan, Weiss, Bǎlan et al. 2009).
+}
+    \label{fig:img8}
+\end{figure}
+
+
+\subsubsection{Reconhecimento de atividade}
+O tema final amplamente estudado na modelagem humana é o reconhecimento de movimento, atividade e ação (Bobick, 1997; Hu, Tan, Wang e outros, 2004; Hilton, Fua e Ronfard, 2006). Exemplos de ações que são comumente reconhecidas incluem andar e correr, pular, dançar, pegar objetos, sentar e levantar e acenar. Trabalhos representativos recentes sobre esses tópicos foram escritos por Robertson e Reid (2006), Sminchisescu, Kanaujia e Metaxas (2006), Weinland, Ronfard e Boyer (2006), Yilmaz e Shah (2006) e Gorelick, Blank, Shechtman. et al. (2007).
+
 
 % References
+\clearpage
 \small
 \bibliographystyle{plain}
 \bibliography{bibliography}
+
 \end{document}
 
 
