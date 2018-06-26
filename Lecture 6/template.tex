@@ -151,7 +151,73 @@ bla bla bla
 
 \section{Representação de superfícies}
 
-bla bla bla
+Nesta seção vamos analisar as representações com mais detalhe. Representações explícitas de superfície, como malhas triangulares, \textit{splines} (Farin 1992, 1996) e superfícies de subdivisão (Stollnitz, DeRose, and Salesin 1996; Zorin, Schröder, and Sweldens 1996; Warren and Weimer 2001; Peters and Reif 2008), permitindo não apenas a criação de modelos altamento detalhados, mas também operações de processamento, como a interpolação (Seção \ref{subsec:InterpolacaoDeSuperficie}), carenagem ou suavização, dizimação e simplificação (Seção \ref{subsec:SimplificacaoDeSuperficie}).
+
+\subsection{Interpolação de superfície}
+\label{subsec:InterpolacaoDeSuperficie}
+
+Uma das operações mais comuns em superfícies é a sua reconstrução a partir de um conjunto de restrições de dados esparsos, ou seja, interpolação de dados dispersos. Ao formular tais problemas, as superfícies podem ser parametrizadas como campos de altura $\[f(\textbf{x})\]$, como superfícies paramétricas 3D $\[\textbf{f}(\textbf{x})\]$, ou como modelos não paramétricos, como coleções de triângulos.
+
+Sabemos que os problemas de interpolação de função bidimensional e de aproximação $\[d_i \rightarrow f(x)\]$ poderiam ser lançados como problemas de minimização de energia usando a regularização. Tais problemas também podem especificar os locais de descontinuidades na superfície, bem como as restrições de orientação local (Terzopoulos 1986b; Zhang, Dugas-Phocion, Samson et al. 2002).
+
+Uma abordagem para resolver esses problemas é a discretização da superfície e da energia em uma malha ou malha discreta usando análise de elementos finitos (Terzopoulos, 1986b). Tais problemas podem então ser resolvidos usando técnicas esparsas de solução de sistemas, como o multigrid (Briggs, Henson e McCormick 2000) ou gradiente de conjugado hierarquicamente pré-condicionado (Szeliski 2006b). A superfície também pode ser representada usando uma combinação hierárquica de B-splines multiníveis (Lee, Wolberg e Shin 1996).
+
+Uma abordagem alternativa é usar funções de base radial (\textit{kernel}) (Boult e Kender, 1986; Nielson, 1993) para interpolar um campo $\[f(x)\]$ até um número de valores de dados $\[d_i\]$ localizado em $\[x_i\]$, a abordagem da função de base radial usa a fórmula presenta na Figura \ref{fig:baseRadial}. Onde os pesos (Figura \ref{fig:calduloPeso}), são calculados usando uma função de base radial (esférica simétrica) K(r).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.3\textwidth]{radialBasisFunction.jpg}
+    \caption{Função de base radial (Boult e Kender, 1986; Nielson, 1993)}
+    \label{fig:baseRadial}
+\end{figure}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.4\textwidth]{weightCalcule.jpg}
+    \caption{Calculo do peso}
+    \label{fig:calduloPeso}
+\end{figure}
+
+Se quisermos que a função $\[f(x)\]$ interpole exatamente os pontos de dados, as funções do kernel devem ser singulares na origem, $\lim_{r\to0}$ $K(r)\rightarrow\infty$(Nielson 1993), ou um sistema linear denso deve ser resolvido para determinar a magnitude associada a cada função de base (Boult e Kender 1986). Acontece que, para certos problemas regularizados, existem funções de base radial (\textit{kernels}) que dão os mesmos resultados que uma solução analítica completa (Boult e Kender 1986). Infelizmente, porque a solução densa do sistema é cúbica no número de pontos de dados, abordagens de função de base só podem ser usadas para pequenos problemas (Beier e Neely, 1992).
+
+Quando uma superfície paramétrica tridimensional está sendo modelada, a função com valor de vetor $\[\textbf{f}\]$ (Figura \ref{fig:baseRadial}) codifica as coordenadas 3D \textit{(x, y, z)} na superfície e o domínio x = \textit{(s, t)} codifica a parametrização da superfície. Um exemplo destas superfícies são modelos paramétricos em busca de simetria, que são versões deformáveis elasticamente de cilindros generalizados (Terzopoulos, Witkin e Kass, 1987). Nestes modelos, \textit{s} é o parâmetro ao longo da espinha do tubo deformável e \textit{t} é o parâmetro em torno do tubo. Uma variedade de suavidade e forças de simetria radial são usadas para restringir o modelo enquanto ele é ajustado para curvas de silhueta baseadas em imagem.
+
+Também é possível definir modelos de superfícies não paramétricas, como malhas trianguladas gerais, e equipar tais malhas com métricas internas de suavidade e métricas de ajuste de dados externos (Sander e Zucker, 1990; Fua e Sander, 1992; Delingette, Hebert e Ikeuichi 1992; McInerney e Terzopoulos 1993). Enquanto a maioria dessas abordagens assume um modelo padrão de deformação elástica, que usa termos de suavidade interna quadrática, também é possível usar modelos de energia sub-linear para preservar melhor os vincos superficiais (Diebel, Thrun e Brünig 2006). As malhas triangulares também podem ser aumentadas com elementos \textit{spline} (Sullivan e Ponce, 1998) ou superfícies subdivididas (Stollnitz, DeRose e Salesin, 1996; Zorin, Schröder e Sweldens, 1996; Warren e Weimer, 2001; Peters e Reif, 2008) para produzir superfícies com melhor controle de suavidade.
+
+Os modelos de superfície paramétricos e não paramétricos assumem que a topologia da superfície é conhecida e fixada antecipadamente. Para modelagem de superfície mais flexível, podemos representar a superfície como uma coleção de pontos orientados ou usar funções implícitas 3D, que também podem ser combinadas com modelos de superfície 3D elásticos (McInerney e Terzopoulos 1993).
+
+\subsection{Simplificação de superfície}
+\label{subsec:SimplificacaoDeSuperficie}
+
+Uma vez que uma malha triangular tenha sido criada a partir de dados 3D, muitas vezes é desejável criar uma hierarquia de modelos de malha, por exemplo, para controlar o nível de detalhe (\textit{level of detail}) exibido em um aplicativo de computação gráfica.
+
+Uma maneira para se fazer isso é aproximar uma dada malha com uma que tenha conectividade de subdivisão, sobre a qual um conjunto de coeficientes triangulares \textit{wavelet} pode então ser computado (Eck, DeRose, Duchamp et al. 1995). Uma abordagem mais contínua é usar operações sequenciais de colapso de borda para ir da malha de resolução fina original para uma malha de nível básico grosseira (Hoppe 1996).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{malhaProgressiva.png}
+    \caption{Representação de malha progressiva de um modelo de avião (Hoppe 1996)}
+    \label{fig:malhaProgressiva}
+\end{figure}
+
+A representação resultante da malha progressiva pode ser usada para renderizar o modelo 3D em níveis arbitrários de detalhe, como mostrado na Figura \ref{fig:malhaProgressiva}.
+
+Na Figura \ref{fig:malhaProgressiva}a foi utilizado uma malha de base $\[\textit{M}^{0}\]$ (total de 150 faces), na sequência (\ref{fig:malhaProgressiva}b) a malha de base foi de $\[\textit{M}^{175}\]$ (totalizando 500 faces), a terceira (\ref{fig:malhaProgressiva}c) malha de base foi de $\[\textit{M}^{425}\]$ (1000 faces) e por último (\ref{fig:malhaProgressiva}d) uma malha de base original $\[\textit{M = M}^n\]$, sendo esta totalizando 13,546 faces.
+
+\subsection{Imagens de geometria}
+
+Enquanto representações de superfície de multi-resolução suportam operações de nível de detalhes, elas ainda consistem em uma coleção irregular de triângulos, o que dificulta comprimir e armazenar em cache de maneira eficiente.
+
+Para tornar a triangulação completamente regular (uniforme e quadriculado), Gu, Gortler e Hoppe (2002) descrevem como criar imagens geométricas cortando malhas de superfície ao longo de linhas bem escolhidas e “achatando” a representação resultante em um quadrado.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagemDeGeometria.jpg}
+    \caption{Imagens de geometria (Gu, Gortler e Hoppe 2002) ACM: (a) 257x257 imagem de geometria define uma malha sobre a superfície; (b) mapa normal de 512 × 512 que define o vértice normal; (c) modelo 3D final iluminado.}
+    \label{fig:imagemGeometria}
+\end{figure}
+
+A Figura \ref{fig:imagemGeometria}a mostra os valores resultantes \textit{(x, y, z)} da malha de superfície mapeada sobre o quadrado unitário, enquanto a Figura \ref{fig:imagemGeometria}b mostra o mapa normal associado \textit{(nx, ny, nz)}, ou seja, as normais de superfície associadas a cada malha vértice, que pode ser usado para compensar a perda de fidelidade visual se a imagem da geometria original estiver muito comprimida.
 
 \section{Reconstrução baseada em modelos}
 
@@ -162,4 +228,5 @@ bla bla bla
 \bibliographystyle{plain}
 \bibliography{bibliography}
 \end{document}
+
 
