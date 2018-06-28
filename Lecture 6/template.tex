@@ -29,7 +29,7 @@
 
 \section{Introdução}
 
-bla bla bla
+O presente trabalho tem como objetivo realizar uma abordagem sobre os tópicos necessários para realizar uma reconstrução 3D. As informações foram retiradas do capítulo 12 do livro \textit{Computer Vision: Algorithms and Applications} de  Richard Szeliski \cite{Szeliski:2010}. Os tópicos discutidos serão Formas a partir de sombra, estéreo, textura e foco. Detecção de profundidade usando sensores ativos. Representação de superfícies e reconstrução baseada em modelos.
 
 \section{Formas a partir de sombra, estéreo, textura e foco}
 
@@ -154,7 +154,7 @@ Um dos sensores de iluminação ativa mais populares é um sensor de laser ou fa
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=1.0\textwidth]{escaneamentoDeFormas.png}
-    \caption{Escaneamento de formas usando sombras projetadas (Bouguet e Perona 1999) (a) configuração da câmera com uma fonte de luz pontual (uma lâmpada de mesa sem seu refletor), um bastão manual projetando uma sombra e (b) os objetos sendo digitalizados na frente de dois fundos planares. (c) Mapa de profundidade em tempo real usando um sistema de iluminação pulsada (Iddan e Yahav 2001) c 2001 SPIE.}
+    \caption{Escaneamento de formas usando sombras projetadas (Bouguet e Perona 1999) ACM: (a) configuração da câmera com uma fonte de luz pontual (uma lâmpada de mesa sem seu refletor), um bastão manual projetando uma sombra e (b) os objetos sendo digitalizados na frente de dois fundos planares. (c) Mapa de profundidade em tempo real usando um sistema de iluminação pulsada (Iddan e Yahav 2001) c 2001 SPIE.}
     \label{fig:escaneamentoDeFormas}
 \end{figure}
 
@@ -167,6 +167,47 @@ Se for necessária uma digitalização ainda mais rápida podemos projetar um ú
 Um sistema consideravelmente melhor pode ser construído usando iluminação customizada de alta velocidade e \textit{hardware} de detecção. Iddan e Yahav (2001) descrevem a construção de sua câmera de detecção de profundidade com taxa de vídeo 3DV Zcam, que projeta um plano de luz pulsado sobre a cena e então integra a luz de retorno por um curto intervalo, obtendo essencialmente medidas de tempo de vôo para a distância dos pixels individuais na cena.
 
 Em vez de usar uma única câmera, também é possível construir um sensor de faixa de iluminação ativa usando configurações de imagem estéreo. A maneira mais simples de fazer isso é apenas projetar padrões aleatórios de faixas na cena para criar uma textura sintética, que ajuda a combinar superfícies sem textura (Kang, Webb, Zitnick et al. 1995). A projeção de uma série conhecida de faixas, assim como na identificação de intervalo de uma única câmera codificada, torna a correspondência entre os pixels não ambígua e permite a recuperação de estimativas de profundidade em pixels vistos apenas em uma única câmera (Scharstein e Szeliski 2003). Esta técnica tem sido usada para produzir um grande número de pares estéreos multi-imagem registrados altamente precisos e mapas de profundidade com a finalidade de avaliar algoritmos de correspondência estéreo (Scharstein e Szeliski 2002; Hirschmüller e Scharstein 2009) e os antecedentes e parâmetros do mapa de profundidade de aprendizagem (Scharstein e Pal 2007).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{mapaProfundidade.png}
+    \caption{Captura de rosto 3D densa em tempo real usando estéreo no espaço tempo (Zhang, Snavely, Curless et al. 2004) ACM: (a) conjunto de cinco quadros de vídeo consecutivos de uma das duas câmeras estéreo (a cada quinto quadro é livre de padrões de faixa) para extrair textura); (b) resultante modelo de superfície 3D de alta qualidade (mapa de profundidade visualizado como uma renderização sombreada).}
+    \label{fig:mapaProfundidade}
+\end{figure}
+
+Embora a projeção de vários padrões geralmente exija que a cena ou o objeto permaneçam imóveis, o processamento adicional pode permitir a produção de mapas de profundidade em tempo real para cenas dinâmicas. A ideia básica (Davis, Ramamoorthi e Rusinkiewicz 2003; Zhang, Curless e Seitz 2003) é assumir que a profundidade é quase constante dentro de uma janela espaço-temporal 3D em torno de cada pixel e usar a janela 3D para correspondência e reconstrução. Dependendo da forma da superfície e do movimento, essa suposição pode ser propensa a erros, como mostrado em (Davis, Nahab, Ramamoorthi et al. 2005). Para modelar formas com maior precisão, Zhang, Curless e Seitz (2003) modelam a variação de disparidade linear dentro da janela espaço-tempo e mostram que melhores resultados podem ser obtidos otimizando globalmente as estimativas de gradientes de disparidade sobre volumes de vídeo (Zhang, Snavely, Curless et al., 2004). A Figura \ref{fig:mapaProfundidade} mostra os resultados da aplicação desse sistema no rosto de uma pessoa; o modelo de superfície 3D com taxa de quadros pode ser usado para manipulação de gráficos e computação gráfica baseada em modelo.
+
+\subsection{Fusão de dados de faixa (\textit{Range data merging})}
+\label{subSec:rangeDataMerging}
+
+Embora as imagens de alcance individual possam ser úteis para aplicações como z-keying em tempo real ou captura de movimento facial, elas são frequentemente usadas como blocos de construção para modelagem de objetos 3D mais completa. Em tais aplicações, os próximos dois passos no processamento são o registro (alinhamento) de modelos de superfícies 3D parciais e sua integração em superfícies 3D coerentes (Curless 1999). Se desejado, isto pode ser seguido por um estágio de ajuste de modelo usando representações paramétricas como cilindros generalizados (Agin e Binford 1976; Nevatia e Binford 1977; Marr e Nishihara 1978; Brooks 1981), \textit{superquadrics} (Pentland 1986; Solina e Bajcsy 1990; Terzopoulos e Metaxas 1991), ou modelos não paramétricos como malhas triangulares (Boissonat 1984) ou modelos baseados fisicamente (Terzopoulos, Witkin e Kass 1988; Delingette, Hebert, e Ikeuichi 1992; Terzopoulos e Metaxas 1991; McInerney e Terzopoulos 1993; Terzopoulos 1999). Diversas técnicas também foram desenvolvidas para segmentar imagens de alcance em superfícies constituintes mais simples (Hoover, Jean-Baptiste, Jiang et al. 1996).
+
+A técnica de registro 3D mais utilizada é o algoritmo \textit{iterated closer point} (ICP), que alterna entre encontrar os pontos mais próximos entre as duas superfícies sendo alinhadas e resolver um problema de orientação absoluta 3D (Besl e McKay 1992; Chen e Medioni 1992; Zhang 1994; Szeliski e Lavallée 1996; Gold, Rangarajan, Lu e outros 1998; David, DeMenthon, Duraiswami e outros 2004; Li e Hartley 2007; Enqvist, Josephson e Kahl 2009). Como as duas superfícies que estão sendo alinhadas geralmente têm apenas sobreposições parciais e também podem ter \textit{outliers}, geralmente são usados critérios de correspondência robustos. A fim de acelerar a determinação do ponto mais próximo, e também para tornar o cálculo da distância à superfície mais preciso, um dos dois conjuntos de pontos (por exemplo, o modelo atual mesclado) pode ser convertido em uma função de distância assinada, opcionalmente representado usando uma \textit{octree spline} para compacidade (Lavallée e Szeliski 1995).
+Variantes no algoritmo ICP básico podem ser usadas para registrar conjuntos de pontos 3D sob deformações não rígidas, por exemplo, para aplicações médicas (Feldmar e Ayache 1996; Szeliski e Lavallée 1996). Os valores de cor associados às medições de pontos ou intervalos também podem ser usados como parte do processo de registro para melhorar a robustez (Johnson e Kang, 1997; Pulli, 1999).
+
+Infelizmente, o algoritmo ICP e suas variantes só podem encontrar um alinhamento ideal localmente entre superfícies 3D. Se isso não for conhecido a \textit{priori}, mais técnicas globais de correspondência ou busca, baseadas em descritores locais invariantes a transformações 3D rígidas, precisam ser usadas. Um exemplo de tal descritor é a \textit{spin image}, que é uma projeção circular local de um patch de superfície 3D em torno do eixo normal local (Johnson e Hebert, 1999). Outro exemplo (anterior) é a representação \textit{splash} introduzida por Stein e Medioni (1992).
+
+Uma vez que duas ou mais superfícies 3D foram alinhadas, elas podem ser mescladas em um único modelo. Uma abordagem é representar cada superfície usando uma malha triangulada e combinar essas malhas usando um processo que às vezes é chamado de \textit{zippering} (Soucy e Laurendeau, 1992; Turk e Levoy, 1994). Outra abordagem, agora mais amplamente utilizada, é calcular uma função de distância assinada que se encaixa em todos os pontos de dados 3D (Hoppe, DeRose, Duchamp et al. 1992; Curless e Levoy 1996; Hilton, Stoddart, Illingworth et al. 1996; Wheeler , Sato e Ikeuchi 1998).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fusaoDeDadosDeIntervalo.png}
+    \caption{Fusão de dados de faixa (Curless e Levoy 1996) c ACM: (a) duas funções de distância assinadas (parte superior esquerda) são mescladas com seu (pesos) parte inferior esquerda para produzir um conjunto combinado de funções (coluna direita) a partir das quais uma isosuperfície pode ser extraído (linha tracejada verde); (b) as funções de distância assinadas são combinadas com rótulos de espaços vazios e não vistos para preencher buracos na superfície iso-superficial.}
+    \label{fig:fusaoDeDadosDeIntervalo}
+\end{figure}
+
+A Figura \ref{fig:fusaoDeDadosDeIntervalo} mostra uma dessas abordagens, a técnica de processamento de imagens por faixa volumétrica (VRIP) desenvolvida por Curless e Levoy (1996), que primeiro calcula uma função de distância com sinal de peso de cada imagem de intervalo e as mescla usando um processo de média ponderada. Para tornar a representação mais compacta, a codificação de comprimento de execução é usada para codificar os voxels vazios, vistos e variáveis (distância sinalizada), e somente os valores de distância assinados próximos a cada superfície são armazenados.Uma vez que a função de distância assinada mesclada foi computada, um algoritmo de extração de superfície de cruzamento zero, como \textit{marching cubes} (Lorensen e Cline 1987), pode ser usado para recuperar um modelo de superfície em malha.
+
+Técnicas de fusão de dados de faixa volumétrica baseadas em distância sinalizada ou funções características (dentro e fora) também são amplamente usadas para extrair superfícies lisas e bem comportadas de conjuntos de pontos orientados ou não orientados (Hoppe, DeRose, Duchamp et al. 1992; Ohtake, Belyaev, Alexa et al., 2003; Kazhdan, Bolitho e Hoppe, 2006; Lempitsky e Boykov, 2007; Zach, Pock e Bischof, 2007b; Zach, 2008).
+
+\subsection{Aplicação: Herança digital}
+\label{subSec:digitalHeritage}
+
+As tecnologias ativas de identificação de alcance, combinadas com modelagem de superfície e técnicas de modelagem de aparência, são amplamente utilizadas nos campos de preservação arqueológica e histórica, que frequentemente também é denominada patrimônio digital (MacDonald 2006). Em tais aplicações, modelos 3D detalhados de objetos culturais são adquiridos e posteriormente usados para aplicações como análise, preservação, restauração e produção de obras de arte duplicadas (Rioux e Bird, 1993).
+
+Um exemplo mais recente de tal empreendimento é o projeto Digital Michelangelo de Levoy, Pulli, Curless et al. (2000), que usaram escaneamento de tarja a laser \textit{Cyberware} e câmeras digitais SLR de alta qualidade montadas em um grande pórtico para obter digitalizações detalhadas do David de Michelangelo e outras esculturas em Florença. O projeto também fez varreduras da \textit{Forma Urbis Romae}, um antigo mapa de pedra de Roma que se despedaçou, para o qual novas características foram obtidas usando técnicas digitais. Todo o processo, desde o planejamento inicial até o desenvolvimento, aquisição e pós-processamento de \textit{software}, levou vários anos (e muitos voluntários) e, como resultado, produziu uma riqueza de técnicas de modelagem de formas e aparências em 3D.
+
+Projetos de escala ainda maior estão sendo tentados, por exemplo, a varredura de locais completos do templo, como Angkor-Thom (Ikeuchi e Sato 2001; Ikeuchi e Miyazaki 2007; Banno, Masuda, Oishi et al. 2008).
 
 
 
