@@ -147,7 +147,28 @@ and Soatto 2006). Mas para que estas técnicas sejam efetivas é necessário lev
 
 \section{Detecção de profundidade usando sensores ativos}
 
-bla bla bla
+Iluminar ativamente uma cena, seja para estimar as normais usando estéreo fotométrico ou para adicionar textura artificial para desfocar a forma, pode melhorar muito o desempenho dos sistemas de visão. Esse tipo de iluminação ativa tem sido usado desde os primeiros dias da visão de máquina para construir sensores altamente confiáveis para estimar imagens de profundidade 3D usando uma variedade de técnicas de detecção de alcance (Besl 1989; Curless 1999; Hebert 2000).
+
+Um dos sensores de iluminação ativa mais populares é um sensor de laser ou faixa de luz, que varre um plano de luz através da cena ou objeto, observando-o de um ponto de vista desfocado (Rioux e Bird 1993; Curless e Levoy). 1995). Quando a listra cai sobre o objeto, ele deforma sua forma de acordo com a forma da superfície que está iluminando. É então uma simples questão de usar a triangulação óptica para estimar as localizações 3D de todos os pontos vistos em uma faixa específica. Em mais detalhes, o conhecimento da equação do plano 3D da faixa de luz nos permite inferir a localização 3D correspondente a cada pixel iluminado. A precisão das técnicas de \textit{striping} de luz podem ser melhoradas encontrando o pico temporal exato na iluminação de cada pixel (Curless e Levoy, 1995). A precisão final de um escaneamento pode ser determinada usando técnicas de modulação de borda inclinada, isto é, criando imagens de vincos nítidos em um objeto de calibração (Goesele, Fuchs e Seidel 2003).
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=1.0\textwidth]{escaneamentoDeFormas.png}
+    \caption{Escaneamento de formas usando sombras projetadas (Bouguet e Perona 1999) (a) configuração da câmera com uma fonte de luz pontual (uma lâmpada de mesa sem seu refletor), um bastão manual projetando uma sombra e (b) os objetos sendo digitalizados na frente de dois fundos planares. (c) Mapa de profundidade em tempo real usando um sistema de iluminação pulsada (Iddan e Yahav 2001) c 2001 SPIE.}
+    \label{fig:escaneamentoDeFormas}
+\end{figure}
+
+Uma variante interessante na identificação de faixas claras é apresentada por Bouguet e Perona (1999). Em vez de projetar uma faixa clara, eles simplesmente acenam com um bastão projetando uma sombra sobre uma cena ou objeto iluminado por uma fonte de luz pontual, como uma lâmpada ou o sol (Figura \ref{fig:escaneamentoDeFormas}a). Como a sombra cai em dois planos de fundo cuja orientação em relação à câmera é conhecida (ou inferida durante a pré-calibração), a equação plana para cada faixa pode ser inferida das duas linhas projetadas, cujas equações 3D são conhecidas (Figura \ref{fig:escaneamentoDeFormas}b) . A deformação da sombra ao cruzar o objeto que está sendo digitalizado revela sua forma 3D. Essa técnica também pode ser usada para estimar a geometria 3D de uma cena de fundo e como sua aparência varia à medida que ela se move na sombra, a fim de lançar novas sombras na cena (Chuang, Goldman, Curless et al. 2003).
+
+O tempo que leva para digitalizar um objeto usando uma técnica de faixa de luz é proporcional ao número de planos de profundidade usados, que geralmente é comparável ao número de pixels em uma imagem. Um escaneamento mais rápido pode ser construído ligando e desligando diferentes pixels de projetor de uma maneira estruturada, por exemplo, usando um código binário ou Gray (Besl 1989). Por exemplo, vamos supor que o projetor LCD que estamos usando tenha 1024 colunas de pixels. Tomando o código binário de 10 bits correspondente ao endereço de cada coluna (0 ... 1023), projetamos o primeiro bit, depois o segundo, etc. Depois de 10 projeções, cada pixel da câmera sabe qual das 1024 colunas de luz do projetor está vendo. Uma abordagem semelhante também pode ser usada para estimar as propriedades de refração de um objeto colocando um monitor atrás do objeto (Zongker, Werner, Curless et al. 1999; Chuang, Zongker, Hindorff et al. 2000). Escaneamentos mais rápidos podem também ser construídos com um único feixe de laser, isto é, um escaneamento de triangulação óptica de pontos voadores em tempo real (Rioux, Bechthold, Taylor et al. 1987).
+
+Se for necessária uma digitalização ainda mais rápida podemos projetar um único padrão texturizado na cena. Proesmans, Van Gool e Defoort (1998) descrevem um sistema no qual uma grade quadriculada é projetada em um objeto (por exemplo, a face de uma pessoa) e a deformação da grade é usada para inferir a forma 3D. Infelizmente, tal técnica só funciona se a superfície for contínua o suficiente para ligar todos os pontos da grade.
+
+Um sistema consideravelmente melhor pode ser construído usando iluminação customizada de alta velocidade e \textit{hardware} de detecção. Iddan e Yahav (2001) descrevem a construção de sua câmera de detecção de profundidade com taxa de vídeo 3DV Zcam, que projeta um plano de luz pulsado sobre a cena e então integra a luz de retorno por um curto intervalo, obtendo essencialmente medidas de tempo de vôo para a distância dos pixels individuais na cena.
+
+Em vez de usar uma única câmera, também é possível construir um sensor de faixa de iluminação ativa usando configurações de imagem estéreo. A maneira mais simples de fazer isso é apenas projetar padrões aleatórios de faixas na cena para criar uma textura sintética, que ajuda a combinar superfícies sem textura (Kang, Webb, Zitnick et al. 1995). A projeção de uma série conhecida de faixas, assim como na identificação de intervalo de uma única câmera codificada, torna a correspondência entre os pixels não ambígua e permite a recuperação de estimativas de profundidade em pixels vistos apenas em uma única câmera (Scharstein e Szeliski 2003). Esta técnica tem sido usada para produzir um grande número de pares estéreos multi-imagem registrados altamente precisos e mapas de profundidade com a finalidade de avaliar algoritmos de correspondência estéreo (Scharstein e Szeliski 2002; Hirschmüller e Scharstein 2009) e os antecedentes e parâmetros do mapa de profundidade de aprendizagem (Scharstein e Pal 2007).
+
+
 
 \section{Representação de superfícies}
 
@@ -344,5 +365,6 @@ O tema final amplamente estudado na modelagem humana é o reconhecimento de movi
 \bibliography{bibliography}
 
 \end{document}
+
 
 
